@@ -13,6 +13,6 @@ status: "confirmed"
 ## Entire Day
 | Place | Notes | Map |
 |---|---|---|
-| Ginza Tsuboyaki-imo | Sweet potatoes in traditional claypot | [📍](https://maps.app.goo.gl/UMHp14bRNxLSaUTW6) |
+| Manten Sushi Marunochi | Reservation @ 11am | [📍](https://maps.app.goo.gl/bctKe3qtzikN8abb6) |
 | Teamlabs Borderless | 1300-1330 hrs admission time | [📍](https://maps.app.goo.gl/XtnA1erWksKXTKLa7) |
 | Rokusan Angels | 1800hrs admission time | [📍](https://maps.app.goo.gl/Znp8zgjqu4PVyBZY6) |
