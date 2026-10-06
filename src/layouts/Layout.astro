@@ -1,0 +1,77 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · Tokyo 2026</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href={import.meta.env.BASE_URL}>Tokyo 2026</a>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>Last updated automatically when the site is edited &amp; pushed.</p>
+    </footer>
+
+    <script>
+      // Turn any "To sort out" / "Checklist" / "Packing" list into
+      // tappable checkboxes. State is remembered per-page in this browser
+      // only (not shared between you and your wife, and not visible to us).
+      const CHECKLIST_HEADING = /to sort out|checklist|packing/i;
+
+      document.querySelectorAll('article.content :is(h2, h3)').forEach((heading) => {
+        if (!CHECKLIST_HEADING.test(heading.textContent || '')) return;
+        const list = heading.nextElementSibling;
+        if (!list || list.tagName !== 'UL') return;
+
+        list.classList.add('checklist');
+        const storageKey = `checklist:${location.pathname}:${heading.textContent?.trim()}`;
+        let saved: Record<string, boolean> = {};
+        try {
+          saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        } catch {
+          saved = {};
+        }
+
+        Array.from(list.children).forEach((li, i) => {
+          if (!(li instanceof HTMLLIElement)) return;
+          const label = document.createElement('label');
+          label.className = 'checklist-item';
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = !!saved[i];
+
+          const span = document.createElement('span');
+          span.innerHTML = li.innerHTML;
+
+          li.innerHTML = '';
+          li.classList.toggle('checked', checkbox.checked);
+          label.append(checkbox, span);
+          li.appendChild(label);
+
+          checkbox.addEventListener('change', () => {
+            saved[i] = checkbox.checked;
+            li.classList.toggle('checked', checkbox.checked);
+            try {
+              localStorage.setItem(storageKey, JSON.stringify(saved));
+            } catch {
+              /* storage unavailable — checkbox still works, just won't persist */
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

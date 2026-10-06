@@ -1,0 +1,21 @@
+{
+  "name": "tokyo-2026-itinerary",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.1.0"
+  },
+  "allowScripts": {
+    "esbuild@0.27.7": true,
+    "esbuild@0.25.12": true,
+    "fsevents@2.3.3": true,
+    "sharp@0.34.5": true
+  }
+}

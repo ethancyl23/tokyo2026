@@ -1,0 +1,67 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import MultiMap from '../../components/MultiMap.astro';
+import AddToCalendar from '../../components/AddToCalendar.astro';
+
+export async function getStaticPaths() {
+  const days = (await getCollection('days')).sort(
+    (a, b) => a.data.dayNumber - b.data.dayNumber
+  );
+  return days.map((day, i) => ({
+    params: { slug: day.slug },
+    props: {
+      day,
+      prevDay: i > 0 ? days[i - 1] : null,
+      nextDay: i < days.length - 1 ? days[i + 1] : null,
+    },
+  }));
+}
+
+const { day, prevDay, nextDay } = Astro.props;
+const { Content } = await render(day);
+// Normalize BASE_URL so it never ends in a slash — we add slashes explicitly below.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const hasStops = (day.data.stops?.length ?? 0) > 1;
+const mapSrc = !hasStops && day.data.mapQuery
+  ? `https://maps.google.com/maps?q=${encodeURIComponent(day.data.mapQuery)}&output=embed`
+  : null;
+---
+<Layout title={day.data.title}>
+  <a class="back-link" href={`${base}/`}>← Back to overview</a>
+
+  <img class="hero-image" src={`${base}/${day.data.heroImage}`} alt="" />
+
+  <div class="day-heading">
+    <div class="day-num">
+      Day {day.data.dayNumber} · {day.data.date}
+      {day.data.status === 'tentative' && <span class="badge tentative">tentative</span>}
+      {day.data.status === 'tbd' && <span class="badge tbd">TBD</span>}
+    </div>
+    <h1>{day.data.title}</h1>
+    <p class="location">{day.data.location}{day.data.hotel ? ` · Staying at ${day.data.hotel}` : ''}</p>
+    <AddToCalendar title={day.data.title} location={day.data.location} isoDate={day.data.isoDate} />
+  </div>
+
+  {hasStops && <MultiMap stops={day.data.stops} />}
+  {mapSrc && <iframe class="map-embed" src={mapSrc} loading="lazy"></iframe>}
+
+  <article class="content">
+    <Content />
+  </article>
+
+  <nav class="day-nav">
+    {prevDay ? (
+      <a class="day-nav-link prev" href={`${base}/days/${prevDay.slug}/`}>
+        <span class="day-nav-label">← Day {prevDay.data.dayNumber}</span>
+        <span class="day-nav-title">{prevDay.data.title}</span>
+      </a>
+    ) : <span />}
+    {nextDay ? (
+      <a class="day-nav-link next" href={`${base}/days/${nextDay.slug}/`}>
+        <span class="day-nav-label">Day {nextDay.data.dayNumber} →</span>
+        <span class="day-nav-title">{nextDay.data.title}</span>
+      </a>
+    ) : <span />}
+  </nav>
+</Layout>

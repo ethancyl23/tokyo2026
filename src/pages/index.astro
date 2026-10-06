@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import TripHero from '../components/TripHero.astro';
+
+const days = (await getCollection('days')).sort(
+  (a, b) => a.data.dayNumber - b.data.dayNumber
+);
+// Normalize BASE_URL so it never ends in a slash — we add slashes explicitly below.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const totalDays = days.length;
+const stays = new Set(
+  days
+    .map((d) => d.data.hotel)
+    .filter((h): h is string => !!h && h !== '—' && !/not booked/i.test(h))
+).size;
+const openDays = days.filter((d) => d.data.status === 'tbd').length;
+---
+<Layout title="Trip overview">
+  <TripHero />
+  <h1>Tokyo, 8–17 Oct 2026</h1>
+
+  <div class="trip-meta">
+    <h2>Flights</h2>
+    <dl>
+      <dt>Outbound</dt>
+      <dd>SIN 1715hrs → HND 0105hrs (+1 day), 7–8 Oct 2026</dd>
+      <dt>Return</dt>
+      <dd>HND 0220hrs → SIN — date/time to confirm (see Day 10)</dd>
+    </dl>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><strong>{totalDays}</strong><span>Days</span></div>
+    <div class="stat"><strong>{stays}</strong><span>Stays</span></div>
+    <div class="stat"><strong>{openDays}</strong><span>Still Open</span></div>
+  </div>
+
+  <ul class="day-list">
+    {days.map((day) => (
+      <li>
+        <a class="day-card" href={`${base}/days/${day.slug}/`}>
+          <img src={`${base}/${day.data.heroImage}`} alt="" />
+          <div>
+            <div class="day-num">Day {day.data.dayNumber} · {day.data.date}</div>
+            <h3>
+              {day.data.title}
+              {day.data.status === 'tentative' && <span class="badge tentative">tentative</span>}
+              {day.data.status === 'tbd' && <span class="badge tbd">TBD</span>}
+            </h3>
+            <p>{day.data.location}</p>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Layout>

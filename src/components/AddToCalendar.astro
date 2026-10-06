@@ -1,0 +1,58 @@
+---
+interface Props {
+  title: string;
+  location: string;
+  isoDate: string; // "2026-10-08"
+}
+const { title, location, isoDate } = Astro.props;
+const btnId = `ics-${isoDate}`;
+---
+
+<button id={btnId} class="ics-button" type="button">+ Add to Calendar</button>
+
+<script define:vars={{ btnId, title, location, isoDate }}>
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function nextDayIso(iso) {
+    const d = new Date(iso + 'T00:00:00Z');
+    d.setUTCDate(d.getUTCDate() + 1);
+    return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}`;
+  }
+
+  function isoToCompact(iso) {
+    return iso.replace(/-/g, '');
+  }
+
+  document.getElementById(btnId)?.addEventListener('click', () => {
+    const start = isoToCompact(isoDate);
+    const end = nextDayIso(isoDate);
+    const stamp =
+      new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const uid = `${isoDate}-${btnId}@tokyo2026-itinerary`;
+
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Tokyo 2026 Itinerary//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${start}`,
+      `DTEND;VALUE=DATE:${end}`,
+      `SUMMARY:${title}`,
+      `LOCATION:${location}`,
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].join('\r\n');
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${isoDate}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+</script>

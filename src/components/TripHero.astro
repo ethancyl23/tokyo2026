@@ -1,0 +1,49 @@
+---
+// Flat, minimal illustration — Mt. Fuji + torii gate — matching the site's palette.
+---
+<div class="trip-hero">
+  <svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration of Mount Fuji with a torii gate">
+    <defs>
+      <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#fdf1ea" />
+        <stop offset="100%" stop-color="#faf8f4" />
+      </linearGradient>
+    </defs>
+
+    <rect width="600" height="220" fill="url(#skyGrad)" />
+
+    <!-- sun -->
+    <circle cx="462" cy="82" r="42" fill="#b5473f" opacity="0.88" />
+
+    <!-- distant foothills -->
+    <polygon points="-10,220 150,145 330,220" fill="#c9b89a" opacity="0.45" />
+    <polygon points="270,220 450,150 610,220" fill="#c9b89a" opacity="0.45" />
+
+    <!-- clouds -->
+    <g fill="#ffffff" opacity="0.75">
+      <ellipse cx="110" cy="112" rx="34" ry="10" />
+      <ellipse cx="138" cy="106" rx="24" ry="8" />
+      <ellipse cx="505" cy="150" rx="30" ry="9" />
+      <ellipse cx="530" cy="145" rx="20" ry="7" />
+    </g>
+
+    <!-- Mount Fuji -->
+    <polygon points="80,212 300,42 520,212" fill="#5c6b84" />
+    <path
+      d="M300,42 L276,80 L286,86 L256,110 L268,118 L237,144 L363,144 L332,118 L344,110 L314,86 L324,80 Z"
+      fill="#faf8f4"
+      opacity="0.95"
+    />
+
+    <!-- foreground ground -->
+    <rect x="0" y="206" width="600" height="14" fill="#efe6d6" />
+
+    <!-- torii gate -->
+    <g fill="#b5473f">
+      <rect x="56" y="150" width="10" height="62" />
+      <rect x="104" y="150" width="10" height="62" />
+      <rect x="44" y="146" width="88" height="9" rx="2" />
+      <rect x="52" y="160" width="72" height="7" rx="2" />
+    </g>
+  </svg>
+</div>
